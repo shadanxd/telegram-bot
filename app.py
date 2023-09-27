@@ -54,5 +54,4 @@ if __name__ == '__main__':
     link_handler = CommandHandler('link', link)
     application.add_handler(start_handler)
     application.add_handler(link_handler)
-    
-    application.run_polling()
+    application.run_polling(timeout= 600, write_timeout= 600)
