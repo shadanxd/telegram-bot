@@ -1,7 +1,7 @@
 import logging
 import os
 from telegram import Update, InputFile
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 from downloader import Downloader
 import config
 
@@ -11,10 +11,9 @@ logging.basicConfig(
 )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="type /link followed by url to download youtube or instagram video")
-
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Paste youtube video or instagram reel link to download it")
 async def link(update: Update, context):
-    link = " ".join(context.args)
+    link = update.message.text
     await update.message.reply_text("Downloading.... this may take a while")
     downloader = Downloader(link)
     status = False
@@ -55,7 +54,7 @@ if __name__ == '__main__':
     application = ApplicationBuilder().token(config.bot_token).build()
     
     start_handler = CommandHandler('start', start)
-    link_handler = CommandHandler('link', link)
+    link_handler = MessageHandler(filters.TEXT & (filters.Entity("url") | filters.Entity("text_link")), link)
     application.add_handler(start_handler)
     application.add_handler(link_handler)
     application.run_polling(timeout= 600, write_timeout= 600)
