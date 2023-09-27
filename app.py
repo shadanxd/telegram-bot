@@ -10,21 +10,29 @@ logging.basicConfig(
 )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="Congrats Umar on his new bike")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="type /link followed by url to download youtube or instagram video")
 
 async def link(update: Update, context):
     link = " ".join(context.args)
     await update.message.reply_text("Downloading.... this may take a while")
-    yt_downloader = Downloader(link)
-    status = yt_downloader.download_video()
-    if status:
+    downloader = Downloader(link)
+    status = False
+    if link.find('instagram') != -1:
+        print("dowloading insta")
+        await downloader.download_instagram()
+    else:
+        print("downloading YT")
+        await downloader.download_youtube()
+    if downloader.downloaded_path is not None:
         await update.message.reply_text("Now Uploading....")
         
         # Upload the downloaded file
-        await upload(update, context, path=yt_downloader.downloaded_path)
+        await upload(update, context, path=downloader.downloaded_path)
         
         # Delete the downloaded file after uploading
-        del yt_downloader
+        del downloader
+    else:
+        await update.message.reply_text("URL not valid please check again")
 
 async def upload(update: Update, context: ContextTypes.DEFAULT_TYPE, path):
     try:
