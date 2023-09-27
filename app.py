@@ -3,6 +3,7 @@ import os
 from telegram import Update, InputFile
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 from downloader import Downloader
+import config
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -47,12 +48,10 @@ async def upload(update: Update, context: ContextTypes.DEFAULT_TYPE, path):
         logging.error(f"Error uploading or deleting file: {e}")
     
 if __name__ == '__main__':
-    application = ApplicationBuilder().token(
-        '6371821489:AAGObhHZiXqvEgV-IQGtcBG_IdqE5aWMkBM').build()
+    application = ApplicationBuilder().token(config.bot_token).build()
     
     start_handler = CommandHandler('start', start)
     link_handler = CommandHandler('link', link)
     application.add_handler(start_handler)
     application.add_handler(link_handler)
-    
-    application.run_polling()
+    application.run_polling(timeout= 600, write_timeout= 600)
