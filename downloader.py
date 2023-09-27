@@ -7,7 +7,7 @@ class Downloader:
         self.link = link
         self.downloaded_path = None
     
-    def download_youtube(self):
+    async def download_youtube(self):
         ydl_opts = {
             'format': 'best',
             'outtmpl': '%(title)s.%(ext)s',  # Template for the output filename
@@ -21,9 +21,8 @@ class Downloader:
                 video_info = info_dict
             self.downloaded_path = ydl.prepare_filename(video_info)
             print("downloaded path", self.downloaded_path)
-            return True
     
-    def download_instagram(self):
+    async def download_instagram(self):
         
         url = "https://download-ig-videos.vercel.app/"
 
@@ -60,4 +59,3 @@ class Downloader:
             for chunk in response_vid.iter_content(chunk_size=1024):
                 if chunk:
                     video_file.write(chunk)
-            return True

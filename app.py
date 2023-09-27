@@ -19,11 +19,11 @@ async def link(update: Update, context):
     status = False
     if link.find('instagram') != -1:
         print("dowloading insta")
-        status = downloader.download_instagram()
+        await downloader.download_instagram()
     else:
         print("downloading YT")
-        status = downloader.download_youtube()
-    if status:
+        await downloader.download_youtube()
+    if downloader.downloaded_path is not None:
         await update.message.reply_text("Now Uploading....")
         
         # Upload the downloaded file
