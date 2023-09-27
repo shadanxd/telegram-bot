@@ -18,12 +18,16 @@ async def link(update: Update, context):
     await update.message.reply_text("Downloading.... this may take a while")
     downloader = Downloader(link)
     status = False
-    if link.find('instagram') != -1:
-        print("dowloading insta")
-        await downloader.download_instagram()
-    else:
-        print("downloading YT")
-        await downloader.download_youtube()
+    try:
+        if link.find('instagram') != -1:
+            print("dowloading insta")
+            await downloader.download_instagram()
+        elif link.find('youtu.be') != -1 or link.find('youtube'):
+            print("downloading YT")
+            await downloader.download_youtube()
+    except Exception as e:
+        logging.error("Invalid URL")
+        await update.message.reply_text("Invalid URL")
     if downloader.downloaded_path is not None:
         await update.message.reply_text("Now Uploading....")
         
@@ -33,7 +37,7 @@ async def link(update: Update, context):
         # Delete the downloaded file after uploading
         del downloader
     else:
-        await update.message.reply_text("URL not valid please check again")
+        await update.message.reply_text("Uploading Failed")
 
 async def upload(update: Update, context: ContextTypes.DEFAULT_TYPE, path):
     try:
